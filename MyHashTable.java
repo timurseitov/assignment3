@@ -35,7 +35,7 @@ public class MyHashTable {
         if (key == null || value == null) {
             throw new IllegalArgumentException("key or value is null");
         }
-        int bucketIndex = toIndex(key); //переиммноватть
+        int bucketIndex = toIndex(key);
         HashNode head = buckets[bucketIndex];
         while (head != null) {
             if (head.key.equals(key)) {

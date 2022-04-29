@@ -1,6 +1,6 @@
-public class MyHashTable {
-    private HashNode[] buckets;
-    private int capacity; //(capacity)
+public class MyHashTable<K, V> {
+    private final HashNode[] buckets;
+    private final int capacity;
     private int size;
 
     public MyHashTable(int capacity) {
@@ -9,14 +9,14 @@ public class MyHashTable {
         this.size = 0;
     }
 
-    private class HashNode {
-        private Integer key;
-        private String value;
+    private static class HashNode<K, V> {
+        private K key;
+        private V value;
         private HashNode next;
 
         public HashNode(Integer key, String value) {
-            this.key = key;
-            this.value = value;
+            this.key = (K) key;
+            this.value = (V) value;
         }
     }
 
@@ -31,11 +31,11 @@ public class MyHashTable {
         return false;
     }
 
-    public void put(Integer key, String value) {
+    public void put(K key, V value) {
         if (key == null || value == null) {
             throw new IllegalArgumentException("key or value is null");
         }
-        int bucketIndex = toIndex(key);
+        int bucketIndex = hash((Integer) key);
         HashNode head = buckets[bucketIndex];
         while (head != null) {
             if (head.key.equals(key)) {
@@ -46,33 +46,33 @@ public class MyHashTable {
         }
         size++;
         head = buckets[bucketIndex];
-        HashNode node = new HashNode(key, value);
+        HashNode node = new HashNode((Integer) key, (String) value);
         node.next = head;
         buckets[bucketIndex] = node;
     }
 
-    private int toIndex(Integer key) {
+    private int hash(Integer key) {
         return key % capacity; //или же bucket.length
     }
 
-    public String get(Integer key) {
-        int bucketIndex = toIndex(key);
+    public V get(Integer key) {
+        int bucketIndex = hash(key);
         HashNode head = buckets[bucketIndex];
         while (head != null) {
             if (head.key.equals(key)) {
-                return head.value;
+                return (V) head.value;
             }
             head = head.next;
         }
-        return buckets[bucketIndex].value;
+        return (V) buckets[bucketIndex].value;
     }
 
-    public String remove(Integer key) {
+    public V remove(Integer key) {
         if(key == null) {
             throw new IllegalArgumentException("key is null");
         }
 
-        int bucketIndex = toIndex(key);
+        int bucketIndex = hash(key);
         HashNode head = buckets[bucketIndex];
         HashNode prev = null;
 
@@ -92,6 +92,7 @@ public class MyHashTable {
         } else {
             buckets[bucketIndex] = head.next;
         }
-        return head.value;
+        return (V) head.value;
     }
 }
+
